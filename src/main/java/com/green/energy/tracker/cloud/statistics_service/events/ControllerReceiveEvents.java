@@ -20,14 +20,14 @@ public class ControllerReceiveEvents {
     private final GlobalStatisticsService globalStatisticsService;
 
     @PostMapping("/sites-events")
-    public ResponseEntity<GlobalStatistics> handleSitesFirestoreEvent(@RequestBody CloudEvent cloudEvent) throws ExecutionException, InterruptedException {
-        log.info("Received site event: {}", cloudEvent);
+    public ResponseEntity<GlobalStatistics> handleSitesFirestoreEvent(@RequestBody byte[] body) throws ExecutionException, InterruptedException {
+        log.info("Received site event: {}", body);
         return ResponseEntity.ok(globalStatisticsService.updateGlobalStatisticsFromEvent());
     }
 
     @PostMapping("/sensors-events")
-    public ResponseEntity<GlobalStatistics> handleSensorsFirestoreEvent(@RequestBody CloudEvent cloudEvent) throws ExecutionException, InterruptedException {
-        log.info("Received sensor event: {}", cloudEvent);
+    public ResponseEntity<GlobalStatistics> handleSensorsFirestoreEvent(@RequestBody byte[] body) throws ExecutionException, InterruptedException {
+        log.info("Received sensor event: {}", body);
         return ResponseEntity.ok(globalStatisticsService.updateGlobalStatisticsFromEvent());
     }
 }
