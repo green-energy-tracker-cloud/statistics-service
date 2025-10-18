@@ -11,6 +11,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
+
+import java.nio.charset.StandardCharsets;
 import java.util.concurrent.ExecutionException;
 
 @RestController
@@ -22,8 +24,7 @@ public class ControllerReceiveEvents{
 
     @PostMapping("/sites-events")
     public ResponseEntity<GlobalStatistics> handleSitesFirestoreEvent(@RequestBody byte[] event) throws ExecutionException, InterruptedException, InvalidProtocolBufferException {
-        DocumentEventData c = DocumentEventData.parseFrom(event);
-        log.info("Received site event: {}", c);
+        log.info("RAW event: {}", new String(event, StandardCharsets.UTF_8));
         return ResponseEntity.ok(globalStatisticsService.updateGlobalStatisticsFromEvent());
     }
 
