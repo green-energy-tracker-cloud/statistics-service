@@ -1,0 +1,15 @@
+spring:
+  application:
+    name: ${SPRING_APP_NAME}
+resilience4j:
+  circuitbreaker:
+    instances:
+      firestoreCb:
+        slidingWindowSize: ${CB_SLIDING_WINDOW_SIZE}
+        minimumNumberOfCalls: ${CB_MIN_CALLS}
+        failureRateThreshold: ${CB_FAILURE_RATE_THRESHOLD}
+        waitDurationInOpenState: ${CB_WAIT_OPEN_STATE}
+        permittedNumberOfCallsInHalfOpenState: ${CB_PERMITTED_HALF_OPEN}
+        registerHealthIndicator: true
+        recordExceptions:
+          - java.lang.Throwable

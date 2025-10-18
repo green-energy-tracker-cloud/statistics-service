@@ -1,0 +1,54 @@
+substitutions:
+  _ARTIFACT_REGISTRY_REPO: "artifact-repo"
+  _IMAGE_NAME: "statistics-service"
+  _LOCATION: "us-east1"
+  _ENV_FILE: "gs://microservices_config/statistics-service/env-prod-config.yaml"
+
+availableSecrets:
+  secretManager:
+    - versionName: projects/$PROJECT_ID/secrets/SONARCLOUD_TOKEN/versions/latest
+      env: 'SONAR_TOKEN'
+
+options:
+  defaultLogsBucketBehavior: REGIONAL_USER_OWNED_BUCKET
+  volumes:
+    - name: 'maven-cache'
+      path: '/root/.m2'
+
+steps:
+
+  - name: 'gcr.io/cloud-builders/mvn'
+    args: [ 'clean', 'verify' ]
+
+  - name: 'maven:3.9.4-eclipse-temurin-17'
+    entrypoint: 'bash'
+    args:
+      - -c
+      - |
+        mvn sonar:sonar \
+          -Dsonar.host.url=https://sonarcloud.io \
+          -Dsonar.organization=green-energy-tracker-cloud \
+          -Dsonar.projectKey=$PROJECT_ID \
+          -Dsonar.login=$$SONAR_TOKEN
+    secretEnv: ['SONAR_TOKEN']
+
+  - name: 'gcr.io/cloud-builders/mvn'
+    args: [
+      'com.google.cloud.tools:jib-maven-plugin:3.4.5:build',
+      '-Dimage=$_LOCATION-docker.pkg.dev/$PROJECT_ID/$_ARTIFACT_REGISTRY_REPO/$_IMAGE_NAME:$COMMIT_SHA'
+    ]
+
+  - name: 'gcr.io/google.com/cloudsdktool/cloud-sdk'
+    entrypoint: bash
+    args:
+      - -c
+      - |
+        gsutil cp $_ENV_FILE ./env.yaml
+
+        gcloud run deploy $_IMAGE_NAME \
+          --image=$_LOCATION-docker.pkg.dev/$PROJECT_ID/$_ARTIFACT_REGISTRY_REPO/$_IMAGE_NAME:$COMMIT_SHA \
+          --region=$_LOCATION \
+          --platform=managed \
+          --service-account=cloud-run-runtime@green-energy-tracker.iam.gserviceaccount.com \
+          --allow-unauthenticated \
+          --env-vars-file=./env.yaml
