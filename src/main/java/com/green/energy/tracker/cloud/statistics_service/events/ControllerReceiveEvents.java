@@ -18,7 +18,7 @@ public class ControllerReceiveEvents {
 
     private final GlobalStatisticsService globalStatisticsService;
 
-    @PostMapping(path = "/sites-events",, consumes = "application/x-protobuf")
+    @PostMapping(path = "/sites-events", consumes = "application/x-protobuf")
     public ResponseEntity<GlobalStatistics> handleSitesFirestoreEvent(@RequestBody Document document) throws ExecutionException, InterruptedException {
         log.info("Received site event: {}", document);
         return ResponseEntity.ok(globalStatisticsService.updateGlobalStatisticsFromEvent());
