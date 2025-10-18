@@ -1,6 +1,5 @@
 package com.green.energy.tracker.cloud.statistics_service.service;
 
-import com.green.energy.tracker.cloud.statistics_service.model.EventType;
 import com.green.energy.tracker.cloud.statistics_service.model.GlobalStatistics;
 import com.green.energy.tracker.cloud.statistics_service.repository.GlobalStatisticsRepository;
 import io.github.resilience4j.circuitbreaker.annotation.CircuitBreaker;
@@ -40,17 +39,17 @@ public class GlobalStatisticsServiceImpl implements GlobalStatisticsService {
         return globalStatisticsRepository.exists();
     }
 
-    public GlobalStatistics createGlobalStatisticsFromEventFallback(EventType eventType, Throwable error) {
+    public GlobalStatistics createGlobalStatisticsFromEventFallback(Throwable error) {
         log.error("Firestore is unavailable. Falling back to default behavior for createGlobalStatisticsFromEvent. Error: {}", error.getMessage());
         throw new RuntimeException("Firestore is unavailable. Please try again later.");
     }
 
-    public GlobalStatistics updateGlobalStatisticsFromEventFallback(EventType eventType, Throwable error) {
+    public GlobalStatistics updateGlobalStatisticsFromEventFallback(Throwable error) {
         log.error("Firestore is unavailable. Falling back to default behavior for updateGlobalStatisticsFromEvent. Error: {}", error.getMessage());
         throw new RuntimeException("Firestore is unavailable. Please try again later.");
     }
 
-    public GlobalStatistics deleteGlobalStatisticsFromEventFallback(EventType eventType, Throwable error) {
+    public GlobalStatistics deleteGlobalStatisticsFromEventFallback(Throwable error) {
         log.error("Firestore is unavailable. Falling back to default behavior for deleteGlobalStatisticsFromEvent. Error: {}", error.getMessage());
         throw new RuntimeException("Firestore is unavailable. Please try again later.");
     }
