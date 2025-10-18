@@ -35,6 +35,7 @@
 		<sonarPluginVersion>3.9.1.2184</sonarPluginVersion>
 		<firestoreVersion>7.3.2</firestoreVersion>
 		<resilience4jVersion>2.2.0</resilience4jVersion>
+		<cloudEventsVersion>4.0.1</cloudEventsVersion>
 	</properties>
 	<dependencies>
 		<!-- Spring Boot -->
@@ -77,6 +78,17 @@
 			<groupId>com.google.cloud</groupId>
 			<artifactId>spring-cloud-gcp-starter-firestore</artifactId>
 			<version>${firestoreVersion}</version>
+		</dependency>
+		<!-- Spring Cloud GCP Cloud Events -->
+		<dependency>
+			<groupId>io.cloudevents</groupId>
+			<artifactId>cloudevents-core</artifactId>
+			<version>${cloudEventsVersion}</version>
+		</dependency>
+		<dependency>
+			<groupId>io.cloudevents</groupId>
+			<artifactId>cloudevents-http-basic</artifactId>
+			<version>${cloudEventsVersion}</version>
 		</dependency>
 		<!-- Resilience4j -->
 		<dependency>
