@@ -2,7 +2,6 @@ package com.green.energy.tracker.cloud.statistics_service.events;
 
 import com.green.energy.tracker.cloud.statistics_service.model.GlobalStatistics;
 import com.green.energy.tracker.cloud.statistics_service.service.GlobalStatisticsService;
-import io.cloudevents.CloudEvent;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
