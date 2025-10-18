@@ -31,6 +31,6 @@ public class ControllerReceiveEvents{
     @PostMapping("/sensors-events")
     public ResponseEntity<GlobalStatistics> handleSensorsFirestoreEvent(@RequestBody byte[] event) throws ExecutionException, InterruptedException {
         log.info("Received sensor event: {}", event);
-        return ResponseEntity.ok(globalStatisticsService.updateGlobalStatisticsFromEvent());
+        return ResponseEntity.ok(globalStatisticsService.updateGlobalStatisticsFromEvent(null));
     }
 }
