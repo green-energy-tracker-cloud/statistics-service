@@ -14,19 +14,19 @@ import java.util.concurrent.ExecutionException;
 @RestController
 @Slf4j
 @RequiredArgsConstructor
-public class ControllerReceiveEvents {
+public class ControllerReceiveEvents{
 
     private final GlobalStatisticsService globalStatisticsService;
 
-    @PostMapping(path = "/sites-events", consumes = "application/x-protobuf")
-    public ResponseEntity<GlobalStatistics> handleSitesFirestoreEvent(@RequestBody Document document) throws ExecutionException, InterruptedException {
-        log.info("Received site event: {}", document);
+    @PostMapping("/sites-events")
+    public ResponseEntity<GlobalStatistics> handleSitesFirestoreEvent(@RequestBody byte[] event) throws ExecutionException, InterruptedException {
+        log.info("Received site event: {}", event);
         return ResponseEntity.ok(globalStatisticsService.updateGlobalStatisticsFromEvent());
     }
 
     @PostMapping("/sensors-events")
-    public ResponseEntity<GlobalStatistics> handleSensorsFirestoreEvent(@RequestBody byte[] body) throws ExecutionException, InterruptedException {
-        log.info("Received sensor event: {}", body);
+    public ResponseEntity<GlobalStatistics> handleSensorsFirestoreEvent(@RequestBody byte[] event) throws ExecutionException, InterruptedException {
+        log.info("Received sensor event: {}", event);
         return ResponseEntity.ok(globalStatisticsService.updateGlobalStatisticsFromEvent());
     }
 }
