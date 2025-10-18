@@ -1,8 +1,12 @@
 package com.green.energy.tracker.cloud.statistics_service.utils;
 
+import com.green.energy.tracker.cloud.statistics_service.model.EventType;
 import com.green.energy.tracker.cloud.statistics_service.model.GlobalStatistics;
+import io.cloudevents.CloudEvent;
+import io.cloudevents.CloudEventAttributes;
 
 import java.util.HashMap;
+import java.util.Objects;
 
 public class GlobalStatisticsFactoryUtils {
 
@@ -18,9 +22,14 @@ public class GlobalStatisticsFactoryUtils {
                 .build();
     }
 
-    public static GlobalStatistics updateGlobalStatistics(GlobalStatistics currentStats){
+    public static GlobalStatistics updateGlobalStatistics(GlobalStatistics currentStats, CloudEvent cloudEvent){
+        var eventType = EventType.fromEventTypeDetail(cloudEvent.getType());
+        switch (eventType){
+            case SITE_ADDED -> currentStats.setTotalSites(currentStats.getTotalSites()+1);
+            case SITE_REMOVED -> currentStats.setTotalSites(Math.max(0,currentStats.getTotalSites()-1));
+            default -> throw new IllegalArgumentException("Unsupported event type for global statistics update: " + eventType);
+        }
         currentStats.setGlobalStatisticsId(currentStats.getGlobalStatisticsId());
-        currentStats.setTotalSites(currentStats.getTotalSites()+1);
         currentStats.setTotalSensors(0);
         currentStats.setActiveSensors(0);
         currentStats.setGlobalAverageValue(0);

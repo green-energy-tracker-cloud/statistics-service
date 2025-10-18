@@ -3,6 +3,7 @@ package com.green.energy.tracker.cloud.statistics_service.repository;
 import com.google.cloud.firestore.Firestore;
 import com.green.energy.tracker.cloud.statistics_service.model.GlobalStatistics;
 import com.green.energy.tracker.cloud.statistics_service.utils.GlobalStatisticsFactoryUtils;
+import io.cloudevents.CloudEvent;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Repository;
@@ -34,8 +35,8 @@ public class GlobalStatisticsRepositoryFirebaseImpl implements GlobalStatisticsR
     }
 
     @Override
-    public GlobalStatistics update() throws ExecutionException, InterruptedException {
-        var documentsToUpdate = exists() ? GlobalStatisticsFactoryUtils.updateGlobalStatistics(getGlobalStatisticsFromDocuments()) : save();
+    public GlobalStatistics update(CloudEvent cloudEvent) throws ExecutionException, InterruptedException {
+        var documentsToUpdate = exists() ? GlobalStatisticsFactoryUtils.updateGlobalStatistics(getGlobalStatisticsFromDocuments(),cloudEvent) : save();
         firestoreClient.collection(GLOBAL_STATISTICS_COLLECTION)
                 .document(documentsToUpdate.getGlobalStatisticsId())
                 .set(documentsToUpdate)

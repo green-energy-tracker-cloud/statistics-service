@@ -2,6 +2,7 @@ package com.green.energy.tracker.cloud.statistics_service.service;
 
 import com.green.energy.tracker.cloud.statistics_service.model.GlobalStatistics;
 import com.green.energy.tracker.cloud.statistics_service.repository.GlobalStatisticsRepository;
+import io.cloudevents.CloudEvent;
 import io.github.resilience4j.circuitbreaker.annotation.CircuitBreaker;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -24,8 +25,8 @@ public class GlobalStatisticsServiceImpl implements GlobalStatisticsService {
 
     @CircuitBreaker(name = "firestoreCb", fallbackMethod = "updateGlobalStatisticsFromEventFallback")
     @Override
-    public GlobalStatistics updateGlobalStatisticsFromEvent() throws ExecutionException, InterruptedException {
-        return globalStatisticsRepository.update();
+    public GlobalStatistics updateGlobalStatisticsFromEvent(CloudEvent cloudEvent) throws ExecutionException, InterruptedException {
+        return globalStatisticsRepository.update(cloudEvent);
     }
 
     @CircuitBreaker(name = "firestoreCb", fallbackMethod = "deleteGlobalStatisticsFromEventFallback")
