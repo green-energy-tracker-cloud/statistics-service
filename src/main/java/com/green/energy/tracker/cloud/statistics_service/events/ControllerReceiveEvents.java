@@ -9,6 +9,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.nio.charset.StandardCharsets;
 import java.util.concurrent.ExecutionException;
 
 @RestController
@@ -20,7 +21,8 @@ public class ControllerReceiveEvents {
 
     @PostMapping("/sites-events")
     public ResponseEntity<GlobalStatistics> handleSitesFirestoreEvent(@RequestBody byte[] body) throws ExecutionException, InterruptedException {
-        log.info("Received site event: {}", body);
+        String bodyString = new String(body, StandardCharsets.UTF_8);
+        log.info("Received site event: {}", bodyString);
         return ResponseEntity.ok(globalStatisticsService.updateGlobalStatisticsFromEvent());
     }
 
