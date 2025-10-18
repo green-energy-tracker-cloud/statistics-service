@@ -6,8 +6,9 @@ import java.util.HashMap;
 
 public class GlobalStatisticsFactoryUtils {
 
-    public static GlobalStatistics createGlobalStatistics(){
+    public static GlobalStatistics createGlobalStatistics(String globalStatisticsId){
         return GlobalStatistics.builder()
+                .globalStatisticsId(globalStatisticsId)
                 .totalSites(0)
                 .totalSensors(0)
                 .activeSensors(0)
@@ -18,6 +19,7 @@ public class GlobalStatisticsFactoryUtils {
     }
 
     public static GlobalStatistics updateGlobalStatistics(GlobalStatistics currentStats){
+        currentStats.setGlobalStatisticsId(currentStats.getGlobalStatisticsId());
         currentStats.setTotalSites(0);
         currentStats.setTotalSensors(0);
         currentStats.setActiveSensors(0);

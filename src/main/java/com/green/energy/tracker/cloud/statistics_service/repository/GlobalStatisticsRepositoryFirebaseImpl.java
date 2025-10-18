@@ -23,9 +23,10 @@ public class GlobalStatisticsRepositoryFirebaseImpl implements GlobalStatisticsR
         if(exists())
             return getGlobalStatisticsFromDocuments();
         log.debug("Saving new global statistics");
-        var globalStatistics = GlobalStatisticsFactoryUtils.createGlobalStatistics();
+        var globalStatisticsId = UUID.randomUUID().toString();
+        var globalStatistics = GlobalStatisticsFactoryUtils.createGlobalStatistics(globalStatisticsId);
         firestoreClient.collection(GLOBAL_STATISTICS_COLLECTION)
-                .document(UUID.randomUUID().toString())
+                .document(globalStatisticsId)
                 .set(globalStatistics)
                 .get();
         log.info("Global statistics saved successfully: {}", globalStatistics);
@@ -36,7 +37,7 @@ public class GlobalStatisticsRepositoryFirebaseImpl implements GlobalStatisticsR
     public GlobalStatistics update() throws ExecutionException, InterruptedException {
         var documentsToUpdate = exists() ? GlobalStatisticsFactoryUtils.updateGlobalStatistics(getGlobalStatisticsFromDocuments()) : save();
         firestoreClient.collection(GLOBAL_STATISTICS_COLLECTION)
-                .document()
+                .document(documentsToUpdate.getGlobalStatisticsId())
                 .set(documentsToUpdate)
                 .get();
         return documentsToUpdate;

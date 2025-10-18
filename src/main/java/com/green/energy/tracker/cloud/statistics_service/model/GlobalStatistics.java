@@ -12,6 +12,7 @@ import java.util.Map;
  * Model representing global aggregated statistics across all sites and sensors.
  */
 public class GlobalStatistics {
+    private String globalStatisticsId;
     private long totalSites;
     private long totalSensors;
     private long activeSensors;
