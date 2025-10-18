@@ -1,6 +1,8 @@
 package com.green.energy.tracker.cloud.statistics_service.events;
 
+import com.google.events.cloud.firestore.v1.DocumentEventData;
 import com.google.firestore.v1.Document;
+import com.google.protobuf.InvalidProtocolBufferException;
 import com.green.energy.tracker.cloud.statistics_service.model.GlobalStatistics;
 import com.green.energy.tracker.cloud.statistics_service.service.GlobalStatisticsService;
 import lombok.RequiredArgsConstructor;
@@ -19,8 +21,9 @@ public class ControllerReceiveEvents{
     private final GlobalStatisticsService globalStatisticsService;
 
     @PostMapping("/sites-events")
-    public ResponseEntity<GlobalStatistics> handleSitesFirestoreEvent(@RequestBody byte[] event) throws ExecutionException, InterruptedException {
-        log.info("Received site event: {}", event);
+    public ResponseEntity<GlobalStatistics> handleSitesFirestoreEvent(@RequestBody byte[] event) throws ExecutionException, InterruptedException, InvalidProtocolBufferException {
+        DocumentEventData c = DocumentEventData.parseFrom(event);
+        log.info("Received site event: {}", c);
         return ResponseEntity.ok(globalStatisticsService.updateGlobalStatisticsFromEvent());
     }
 
