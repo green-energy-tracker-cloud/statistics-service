@@ -20,7 +20,7 @@ public class GlobalStatisticsFactoryUtils {
 
     public static GlobalStatistics updateGlobalStatistics(GlobalStatistics currentStats){
         currentStats.setGlobalStatisticsId(currentStats.getGlobalStatisticsId());
-        currentStats.setTotalSites(0);
+        currentStats.setTotalSites(currentStats.getTotalSites()+1);
         currentStats.setTotalSensors(0);
         currentStats.setActiveSensors(0);
         currentStats.setGlobalAverageValue(0);
