@@ -1,5 +1,6 @@
 package com.green.energy.tracker.cloud.statistics_service.events;
 
+import com.google.firestore.v1.Document;
 import com.green.energy.tracker.cloud.statistics_service.model.GlobalStatistics;
 import com.green.energy.tracker.cloud.statistics_service.service.GlobalStatisticsService;
 import lombok.RequiredArgsConstructor;
@@ -8,8 +9,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
-
-import java.nio.charset.StandardCharsets;
 import java.util.concurrent.ExecutionException;
 
 @RestController
@@ -19,10 +18,9 @@ public class ControllerReceiveEvents {
 
     private final GlobalStatisticsService globalStatisticsService;
 
-    @PostMapping("/sites-events")
-    public ResponseEntity<GlobalStatistics> handleSitesFirestoreEvent(@RequestBody byte[] body) throws ExecutionException, InterruptedException {
-        String bodyString = new String(body, StandardCharsets.UTF_8);
-        log.info("Received site event: {}", bodyString);
+    @PostMapping(path = "/sites-events",, consumes = "application/x-protobuf")
+    public ResponseEntity<GlobalStatistics> handleSitesFirestoreEvent(@RequestBody Document document) throws ExecutionException, InterruptedException {
+        log.info("Received site event: {}", document);
         return ResponseEntity.ok(globalStatisticsService.updateGlobalStatisticsFromEvent());
     }
 
