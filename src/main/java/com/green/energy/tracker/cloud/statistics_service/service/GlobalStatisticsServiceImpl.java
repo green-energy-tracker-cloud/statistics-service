@@ -1,5 +1,6 @@
 package com.green.energy.tracker.cloud.statistics_service.service;
 
+import com.google.protobuf.InvalidProtocolBufferException;
 import com.green.energy.tracker.cloud.statistics_service.model.GlobalStatistics;
 import com.green.energy.tracker.cloud.statistics_service.repository.GlobalStatisticsRepository;
 import io.cloudevents.CloudEvent;
@@ -25,14 +26,10 @@ public class GlobalStatisticsServiceImpl implements GlobalStatisticsService {
 
     @CircuitBreaker(name = "firestoreCb", fallbackMethod = "updateGlobalStatisticsFromEventFallback")
     @Override
-    public GlobalStatistics updateGlobalStatisticsFromEvent(CloudEvent cloudEvent, String source) throws ExecutionException, InterruptedException {
-        return globalStatisticsRepository.update(cloudEvent,source);
-    }
-
-    @CircuitBreaker(name = "firestoreCb", fallbackMethod = "deleteGlobalStatisticsFromEventFallback")
-    @Override
-    public boolean deleteGlobalStatisticsFromEvent() throws ExecutionException, InterruptedException {
-        return globalStatisticsRepository.delete();
+    public GlobalStatistics updateGlobalStatisticsFromEvent(CloudEvent cloudEvent, String source) throws ExecutionException, InterruptedException, InvalidProtocolBufferException {
+        if(exists())
+            return globalStatisticsRepository.update(cloudEvent,source);
+        return createGlobalStatisticsFromEvent();
     }
 
     @Override
@@ -47,11 +44,6 @@ public class GlobalStatisticsServiceImpl implements GlobalStatisticsService {
 
     public GlobalStatistics updateGlobalStatisticsFromEventFallback(Throwable error) {
         log.error("Firestore is unavailable. Falling back to default behavior for updateGlobalStatisticsFromEvent. Error: {}", error.getMessage());
-        throw new RuntimeException("Firestore is unavailable. Please try again later.");
-    }
-
-    public GlobalStatistics deleteGlobalStatisticsFromEventFallback(Throwable error) {
-        log.error("Firestore is unavailable. Falling back to default behavior for deleteGlobalStatisticsFromEvent. Error: {}", error.getMessage());
         throw new RuntimeException("Firestore is unavailable. Please try again later.");
     }
 }

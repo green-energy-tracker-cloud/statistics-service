@@ -1,6 +1,7 @@
 package com.green.energy.tracker.cloud.statistics_service.repository;
 
 import com.google.cloud.firestore.Firestore;
+import com.google.protobuf.InvalidProtocolBufferException;
 import com.green.energy.tracker.cloud.statistics_service.model.GlobalStatistics;
 import com.green.energy.tracker.cloud.statistics_service.utils.GlobalStatisticsFactoryUtils;
 import io.cloudevents.CloudEvent;
@@ -13,7 +14,7 @@ import java.util.concurrent.ExecutionException;
 @Repository
 @RequiredArgsConstructor
 @Slf4j
-public class GlobalStatisticsRepositoryFirebaseImpl implements GlobalStatisticsRepository {
+public class GlobalStatisticsRepositoryFirestoreImpl implements GlobalStatisticsRepository {
 
     private final Firestore firestoreClient;
     public static final String GLOBAL_STATISTICS_COLLECTION = "global_statistics";
@@ -21,8 +22,6 @@ public class GlobalStatisticsRepositoryFirebaseImpl implements GlobalStatisticsR
 
     @Override
     public GlobalStatistics save() throws ExecutionException, InterruptedException {
-        if(exists())
-            return getGlobalStatisticsFromDocuments();
         log.debug("Saving new global statistics");
         var globalStatisticsId = UUID.randomUUID().toString();
         var globalStatistics = GlobalStatisticsFactoryUtils.createGlobalStatistics(globalStatisticsId);
@@ -35,20 +34,13 @@ public class GlobalStatisticsRepositoryFirebaseImpl implements GlobalStatisticsR
     }
 
     @Override
-    public GlobalStatistics update(CloudEvent cloudEvent, String source) throws ExecutionException, InterruptedException {
-        var documentsToUpdate = exists() ? GlobalStatisticsFactoryUtils.updateGlobalStatistics(getGlobalStatisticsFromDocuments(),cloudEvent,source) : save();
+    public GlobalStatistics update(CloudEvent cloudEvent, String source) throws ExecutionException, InterruptedException, InvalidProtocolBufferException {
+        var documentsToUpdate = GlobalStatisticsFactoryUtils.updateGlobalStatistics(getGlobalStatisticsFromDocuments(),cloudEvent,source);
         firestoreClient.collection(GLOBAL_STATISTICS_COLLECTION)
                 .document(documentsToUpdate.getGlobalStatisticsId())
                 .set(documentsToUpdate)
                 .get();
         return documentsToUpdate;
-    }
-
-    @Override
-    public boolean delete() throws ExecutionException, InterruptedException {
-        var deleteDocs = firestoreClient.collection(GLOBAL_STATISTICS_COLLECTION).document().delete().get();
-        log.info("Global statistics deleted successfully. UpdateTime: {}", deleteDocs.getUpdateTime());
-        return true;
     }
 
     @Override

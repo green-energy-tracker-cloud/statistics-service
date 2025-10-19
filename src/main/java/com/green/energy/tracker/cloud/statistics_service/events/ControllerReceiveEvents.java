@@ -21,16 +21,21 @@ public class ControllerReceiveEvents{
 
     private final GlobalStatisticsService globalStatisticsService;
 
+    /* Handles Firestore events related to "sites" and updates global statistics accordingly */
     @PostMapping("/sites-events")
-    public ResponseEntity<GlobalStatistics> handleSitesFirestoreEvent(@RequestHeader HttpHeaders headers, @RequestBody byte[] event) throws ExecutionException, InterruptedException, InvalidProtocolBufferException {
+    public ResponseEntity<GlobalStatistics> handleSitesFirestoreEvent(@RequestHeader HttpHeaders headers, @RequestBody byte[] event)
+            throws ExecutionException, InterruptedException, InvalidProtocolBufferException {
         var cloudEvent = CloudEventHttpUtils.toReader(headers, ()-> event).toEvent();
         log.info("Received site event: {}", cloudEvent);
         return ResponseEntity.ok(globalStatisticsService.updateGlobalStatisticsFromEvent(cloudEvent,"site"));
     }
 
+    /* Handles Firestore events related to "sensors" and updates global statistics accordingly */
     @PostMapping("/sensors-events")
-    public ResponseEntity<GlobalStatistics> handleSensorsFirestoreEvent(@RequestBody byte[] event) throws ExecutionException, InterruptedException {
-        log.info("Received sensor event: {}", event);
-        return ResponseEntity.ok(globalStatisticsService.updateGlobalStatisticsFromEvent(null,"sensor"));
+    public ResponseEntity<GlobalStatistics> handleSensorsFirestoreEvent(@RequestHeader HttpHeaders headers, @RequestBody byte[] event)
+            throws ExecutionException, InterruptedException, InvalidProtocolBufferException {
+        var cloudEvent = CloudEventHttpUtils.toReader(headers, ()-> event).toEvent();
+        log.info("Received sensor event: {}", cloudEvent);
+        return ResponseEntity.ok(globalStatisticsService.updateGlobalStatisticsFromEvent(cloudEvent,"sensor"));
     }
 }
