@@ -11,7 +11,7 @@ public enum EventType {
     SENSOR_ADDED("google.cloud.datastore.entity.v1.created"),
     SENSOR_REMOVED("google.cloud.datastore.entity.v1.deleted"),
     SENSOR_UPDATED("google.cloud.datastore.entity.v1.updated"),
-    SITE_ADDED("google.cloud.datastore.entity.v1.create"),
+    SITE_ADDED("google.cloud.datastore.entity.v1.created"),
     SITE_REMOVED("google.cloud.datastore.entity.v1.deleted"),
     SITE_UPDATED("google.cloud.datastore.entity.v1.updated");
 
