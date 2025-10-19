@@ -8,12 +8,12 @@ import java.util.Arrays;
 @RequiredArgsConstructor
 @Getter
 public enum EventType {
-    SENSOR_ADDED("google.cloud.datastore.entity.v1.created"),
-    SENSOR_REMOVED("google.cloud.datastore.entity.v1.deleted"),
-    SENSOR_UPDATED("google.cloud.datastore.entity.v1.updated"),
-    SITE_ADDED("google.cloud.datastore.entity.v1.created"),
-    SITE_REMOVED("google.cloud.datastore.entity.v1.deleted"),
-    SITE_UPDATED("google.cloud.datastore.entity.v1.updated");
+    SENSOR_ADDED("google.cloud.datastore.entity.v1.created_sensor"),
+    SENSOR_REMOVED("google.cloud.datastore.entity.v1.deleted_sensor"),
+    SENSOR_UPDATED("google.cloud.datastore.entity.v1.updated_sensor"),
+    SITE_ADDED("google.cloud.datastore.entity.v1.created_site"),
+    SITE_REMOVED("google.cloud.datastore.entity.v1.deleted_site"),
+    SITE_UPDATED("google.cloud.datastore.entity.v1.updated_site");
 
     private final String eventTypeDetail;
 

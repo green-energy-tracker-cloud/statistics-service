@@ -25,12 +25,12 @@ public class ControllerReceiveEvents{
     public ResponseEntity<GlobalStatistics> handleSitesFirestoreEvent(@RequestHeader HttpHeaders headers, @RequestBody byte[] event) throws ExecutionException, InterruptedException, InvalidProtocolBufferException {
         var cloudEvent = CloudEventHttpUtils.toReader(headers, ()-> event).toEvent();
         log.info("Received site event: {}", cloudEvent);
-        return ResponseEntity.ok(globalStatisticsService.updateGlobalStatisticsFromEvent(cloudEvent));
+        return ResponseEntity.ok(globalStatisticsService.updateGlobalStatisticsFromEvent(cloudEvent,"site"));
     }
 
     @PostMapping("/sensors-events")
     public ResponseEntity<GlobalStatistics> handleSensorsFirestoreEvent(@RequestBody byte[] event) throws ExecutionException, InterruptedException {
         log.info("Received sensor event: {}", event);
-        return ResponseEntity.ok(globalStatisticsService.updateGlobalStatisticsFromEvent(null));
+        return ResponseEntity.ok(globalStatisticsService.updateGlobalStatisticsFromEvent(null,"sensor"));
     }
 }

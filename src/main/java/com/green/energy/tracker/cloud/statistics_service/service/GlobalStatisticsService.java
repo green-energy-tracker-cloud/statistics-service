@@ -11,7 +11,7 @@ public interface GlobalStatisticsService {
      * Methods to handle global statistics based on events.
      */
     GlobalStatistics createGlobalStatisticsFromEvent() throws ExecutionException, InterruptedException;
-    GlobalStatistics updateGlobalStatisticsFromEvent(CloudEvent cloudEvent) throws ExecutionException, InterruptedException;
+    GlobalStatistics updateGlobalStatisticsFromEvent(CloudEvent cloudEvent, String source) throws ExecutionException, InterruptedException;
     boolean deleteGlobalStatisticsFromEvent() throws ExecutionException, InterruptedException;
     boolean exists() throws ExecutionException, InterruptedException;
 }

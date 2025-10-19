@@ -35,8 +35,8 @@ public class GlobalStatisticsRepositoryFirebaseImpl implements GlobalStatisticsR
     }
 
     @Override
-    public GlobalStatistics update(CloudEvent cloudEvent) throws ExecutionException, InterruptedException {
-        var documentsToUpdate = exists() ? GlobalStatisticsFactoryUtils.updateGlobalStatistics(getGlobalStatisticsFromDocuments(),cloudEvent) : save();
+    public GlobalStatistics update(CloudEvent cloudEvent, String source) throws ExecutionException, InterruptedException {
+        var documentsToUpdate = exists() ? GlobalStatisticsFactoryUtils.updateGlobalStatistics(getGlobalStatisticsFromDocuments(),cloudEvent,source) : save();
         firestoreClient.collection(GLOBAL_STATISTICS_COLLECTION)
                 .document(documentsToUpdate.getGlobalStatisticsId())
                 .set(documentsToUpdate)

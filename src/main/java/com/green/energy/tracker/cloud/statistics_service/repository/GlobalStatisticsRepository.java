@@ -13,7 +13,7 @@ import java.util.concurrent.ExecutionException;
 
 public interface GlobalStatisticsRepository {
     GlobalStatistics save() throws ExecutionException, InterruptedException;
-    GlobalStatistics update(CloudEvent cloudEvent) throws ExecutionException, InterruptedException;
+    GlobalStatistics update(CloudEvent cloudEvent, String source) throws ExecutionException, InterruptedException;
     boolean delete() throws ExecutionException, InterruptedException;
     boolean exists() throws ExecutionException, InterruptedException;
 }

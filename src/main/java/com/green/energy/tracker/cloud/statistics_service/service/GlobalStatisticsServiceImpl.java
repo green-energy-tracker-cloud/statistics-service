@@ -25,8 +25,8 @@ public class GlobalStatisticsServiceImpl implements GlobalStatisticsService {
 
     @CircuitBreaker(name = "firestoreCb", fallbackMethod = "updateGlobalStatisticsFromEventFallback")
     @Override
-    public GlobalStatistics updateGlobalStatisticsFromEvent(CloudEvent cloudEvent) throws ExecutionException, InterruptedException {
-        return globalStatisticsRepository.update(cloudEvent);
+    public GlobalStatistics updateGlobalStatisticsFromEvent(CloudEvent cloudEvent, String source) throws ExecutionException, InterruptedException {
+        return globalStatisticsRepository.update(cloudEvent,source);
     }
 
     @CircuitBreaker(name = "firestoreCb", fallbackMethod = "deleteGlobalStatisticsFromEventFallback")
