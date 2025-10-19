@@ -43,10 +43,10 @@ public class GlobalStatisticsFactoryUtils {
                 log.info("Old Status: {}", oldStatus);
                 var newStatus = newEntityValues.get("status").getStringValue();
                 log.info("New Status: {}", newStatus);
-                //var oldLastValue = oldEntityValues.get("lastValue").getDoubleValue();
-                //log.info("Old Last Value: {}", oldLastValue);
-                //var newLastValue = newEntityValues.get("lastValue").getDoubleValue();
-                //log.info("New Last Value: {}", newLastValue);
+                var oldLastValue = oldEntityValues.get("lastValue").getDoubleValue();
+                log.info("Old Last Value: {}", oldLastValue);
+                var newLastValue = newEntityValues.get("lastValue").getDoubleValue();
+                log.info("New Last Value: {}", newLastValue);
                 //if (!oldStatus.equals(newStatus)){
                 //    if (newStatus.equals("ACTIVE"))
                 //        currentStats.setActiveSensors(currentStats.getActiveSensors() + 1);
