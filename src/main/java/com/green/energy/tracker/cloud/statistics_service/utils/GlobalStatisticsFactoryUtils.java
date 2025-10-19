@@ -5,9 +5,12 @@ import com.google.protobuf.InvalidProtocolBufferException;
 import com.green.energy.tracker.cloud.statistics_service.model.EventType;
 import com.green.energy.tracker.cloud.statistics_service.model.GlobalStatistics;
 import io.cloudevents.CloudEvent;
+import lombok.extern.slf4j.Slf4j;
+
 import java.util.HashMap;
 import java.util.Objects;
 
+@Slf4j
 public class GlobalStatisticsFactoryUtils {
 
     public static GlobalStatistics createGlobalStatistics(String globalStatisticsId){
@@ -33,11 +36,17 @@ public class GlobalStatisticsFactoryUtils {
             case SENSOR_REMOVED -> currentStats.setTotalSensors(Math.max(0,currentStats.getTotalSensors()-1));
             case SENSOR_UPDATED -> {
                 var oldEntityValues = entityEventData.getOldValue().getEntity().getPropertiesMap();
+                log.info("Old Entity Values: {}", oldEntityValues);
                 var newEntityValues = entityEventData.getValue().getEntity().getPropertiesMap();
+                log.info("New Entity Values: {}", newEntityValues);
                 var oldStatus = oldEntityValues.get("status").getStringValue();
+                log.info("Old Status: {}", oldStatus);
                 var newStatus = newEntityValues.get("status").getStringValue();
+                log.info("New Status: {}", newStatus);
                 var oldLastValue = oldEntityValues.get("lastValue").getDoubleValue();
+                log.info("Old Last Value: {}", oldLastValue);
                 var newLastValue = newEntityValues.get("lastValue").getDoubleValue();
+                log.info("New Last Value: {}", newLastValue);
                 if (!oldStatus.equals(newStatus)){
                     if (newStatus.equals("ACTIVE"))
                         currentStats.setActiveSensors(currentStats.getActiveSensors() + 1);
