@@ -1,10 +1,12 @@
 package com.green.energy.tracker.cloud.statistics_service.utils;
 
+import com.google.events.cloud.datastore.v1.EntityEventData;
 import com.google.protobuf.InvalidProtocolBufferException;
 import com.green.energy.tracker.cloud.statistics_service.model.EventType;
 import com.green.energy.tracker.cloud.statistics_service.model.GlobalStatistics;
 import io.cloudevents.CloudEvent;
 import java.util.HashMap;
+import java.util.Objects;
 
 public class GlobalStatisticsFactoryUtils {
 
@@ -22,7 +24,7 @@ public class GlobalStatisticsFactoryUtils {
 
     public static GlobalStatistics updateGlobalStatistics(GlobalStatistics currentStats, CloudEvent cloudEvent, String source) throws InvalidProtocolBufferException {
         var eventType = EventType.fromEventTypeDetail(cloudEvent.getType() + "_" + source);
-        var documentEventData = CloudEventUtils.getDocumentEventDataFromCloudEvent(cloudEvent);
+        var entityEventData = EntityEventData.parseFrom(Objects.requireNonNull(cloudEvent.getData()).toBytes());
         switch (eventType){
             case SITE_ADDED -> currentStats.setTotalSites(currentStats.getTotalSites()+1);
             case SITE_REMOVED -> currentStats.setTotalSites(Math.max(0,currentStats.getTotalSites()-1));
@@ -30,13 +32,26 @@ public class GlobalStatisticsFactoryUtils {
             case SENSOR_ADDED -> currentStats.setTotalSensors(currentStats.getTotalSensors()+1);
             case SENSOR_REMOVED -> currentStats.setTotalSensors(Math.max(0,currentStats.getTotalSensors()-1));
             case SENSOR_UPDATED -> {
-                // No direct changes to global statistics for updates in this simplified model
+                var oldEntityValues = entityEventData.getOldValue().getEntity().getPropertiesMap();
+                var newEntityValues = entityEventData.getValue().getEntity().getPropertiesMap();
+                var oldStatus = oldEntityValues.get("status").getStringValue();
+                var newStatus = newEntityValues.get("status").getStringValue();
+                var oldLastValue = oldEntityValues.get("lastValue").getDoubleValue();
+                var newLastValue = newEntityValues.get("lastValue").getDoubleValue();
+                if (!oldStatus.equals(newStatus)){
+                    if (newStatus.equals("ACTIVE"))
+                        currentStats.setActiveSensors(currentStats.getActiveSensors() + 1);
+                    else if (oldStatus.equals("ACTIVE"))
+                        currentStats.setActiveSensors(Math.max(0, currentStats.getActiveSensors() - 1));
+                }
+                if(oldLastValue != newLastValue){
+                    var globalAverageValue = currentStats.getGlobalAverageValue() + (newLastValue - oldLastValue) / currentStats.getTotalSensors();
+                    currentStats.setGlobalAverageValue(globalAverageValue);
+                }
             }
             default -> throw new IllegalArgumentException("Unsupported event type for global statistics update: " + eventType);
         }
         currentStats.setGlobalStatisticsId(currentStats.getGlobalStatisticsId());
-        currentStats.setActiveSensors(0);
-        currentStats.setGlobalAverageValue(0);
         currentStats.setAverageBySensorType(new HashMap<>());
         currentStats.setSensorsByStatus(new HashMap<>());
         return currentStats;
