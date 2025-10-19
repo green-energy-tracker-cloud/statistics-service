@@ -13,13 +13,7 @@ import java.util.Objects;
 public class CloudEventUtils {
 
     public static DocumentEventData getDocumentEventDataFromCloudEvent(CloudEvent cloudEvent) throws InvalidProtocolBufferException {
-        var dataJson = new String(Objects.requireNonNull(cloudEvent.getData()).toBytes(), StandardCharsets.UTF_8);
-        log.info("CloudEvent data JSON: {}", dataJson);
-        var builder = DocumentEventData.newBuilder();
-        log.info("Parsing DocumentEventData from CloudEvent data");
-        JsonFormat.parser().ignoringUnknownFields().merge(dataJson, builder);
-        log.info("Successfully parsed DocumentEventData from CloudEvent data");
-        var documentEventData = builder.build();
+        var documentEventData = DocumentEventData.parseFrom(Objects.requireNonNull(cloudEvent.getData()).toBytes());
         log.info("Parsed DocumentEventData from CloudEvent: {}", documentEventData);
         return documentEventData;
     }
